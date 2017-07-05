@@ -115,7 +115,7 @@ void para_ekle(struct musteri *m)
 		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
 		sayac++;
 	}
-	cout<<"dosyadaki kayit sayisi : "<<sayac<<endl;
+	
 	
 	 fclose(dosya);
 	 
@@ -136,7 +136,6 @@ void para_ekle(struct musteri *m)
 			bakiye=bakiye;
 		}
 	   strcpy(kayitlar[z].ad,isim);
-	   cout<<"ol be "<<endl;
 	   strcpy(kayitlar[z].soyad,soyad);
 	   kayitlar[z].hesap_no=hesapno;
 	   kayitlar[z].sifre=sifresi;
@@ -162,7 +161,7 @@ dosya=fopen("hesaplar.txt","a+");
 	}
 	fclose(dosya);
 
-cout<<"sssssss"<<endl;
+
 cikis_yap();
 	
 }
@@ -285,8 +284,7 @@ void sifre_degistir(struct musteri *m)
 		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
 		sayac++;
 	}
-cout<<"sayac : "<<sayac<<endl;
-	
+
 	 fclose(dosya);
 	 
 	 dosya=fopen("hesaplar.txt","r");
@@ -449,7 +447,7 @@ void  anamenu(struct musteri *m)
 	cout<<"2-PARA YATIRMA"<<endl;
 	cout<<"3-PARA CEKME"<<endl;
 	cout<<"4-HESAP BILGI GORUNTULEME"<<endl;
-	
+	cout<<"5-CIKIS YAPMA"<<endl;
 	cin>>secim;
 	
 	switch(secim)
@@ -507,8 +505,8 @@ int main()
 	 	case 2:
 	 	{
 	 		giris_yap();
-	 		cout<<"asdcfvgbn"<<endl;
-	     	return 0;
+	 		
+	     	break;
 	 	}	
 	 		
 	 }
