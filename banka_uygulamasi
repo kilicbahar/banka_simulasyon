@@ -1,0 +1,518 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<string.h>
+#include<cstring>
+#include<ctime>
+#include<cstdlib>
+#include<conio.h>
+#include<stdio.h>
+using namespace std;
+FILE *dosya;
+FILE *dosya2;
+FILE *dosya3;
+void kayit_ekle();
+void giris_yap();
+void sil();
+void anamenu(struct musteri *m);
+void hesap_bilgi_goruntuleme(struct musteri *m);
+void para_cekme(struct musteri *m);
+void sifre_degistir(struct musteri *m);
+int cikis_yap();
+struct para
+{
+	char cins[15];
+	int miktar;
+};
+
+
+struct musteri
+{
+	char ad[15];
+	char soyad[15];
+	int hesap_no;
+	int sifre;
+	char dizi[10];
+	struct para money;
+	//char *dizi;
+};
+
+void kayit_ekle()
+{
+	
+	 char ad[15];
+	 char soyad[15];
+	 int sifre;
+	 int hesap_no;
+	 
+	  musteri *kullanici=new musteri();
+	  para *paralar=new para();
+	 cout<<"adinizi girin : "<<endl;
+	 cin>>ad;
+	 
+	 cout<<"soyadinizi girin : "<<endl;
+	 cin>>soyad;
+	 
+	
+     srand(time(NULL));
+	 sifre=10000+rand()%9999;
+	 kullanici->sifre=sifre;
+	 
+	  
+	 srand((unsigned)time(NULL));
+	 hesap_no=1234567+rand()%9999888;
+	 kullanici->hesap_no=hesap_no;
+	
+	 kullanici->money.miktar=0;
+	 strcpy(kullanici->money.cins,"bos");
+
+	 strcpy(kullanici->ad,ad);
+	 strcpy(kullanici->soyad,soyad);
+	 kullanici->sifre=sifre;
+	
+	 fprintf(dosya,"%s %s %d %d %d %s\n", kullanici->ad,kullanici->soyad,kullanici->hesap_no,kullanici->sifre ,kullanici->money.miktar,kullanici->money.cins);
+	 cout<<"hesap numaranız : "<<kullanici->hesap_no<<" olarak tanimlandi."<<endl;
+	 cout<<"Sifreniz : "<<kullanici->sifre<<" olarak belirlendi."<<endl;
+	 fclose(dosya);
+	 
+	
+}
+
+void hesap_bilgi_goruntule(struct musteri *m)
+{   
+ 
+   cout<<"ISIM - SOYISIM : "<<m->ad<<" "<<m->soyad<<endl;
+   cout<<"HESAP NO : "<<m->hesap_no<<endl;
+   cout<<"PARA MIKTARINIZ : "<<m->money.miktar<<" "<<m->money.cins<<endl;
+  
+}
+
+void para_ekle(struct musteri *m)
+{   
+    int miktar;
+    char tur[15];
+	cout<<"yuklemek istediginiz miktari girin : "<<endl;
+	cin>>miktar;
+    
+    cout<<"paranin turunu tanımlayın : "<<endl;
+    cin>>tur;
+	
+	dosya=fopen("hesaplar.txt","r");
+	dosya2=fopen("yedek.txt","w+");
+	dosya3=fopen("sil.txt","w");
+	 fclose(dosya3);
+	
+	char isim[15];
+	
+	char soyad[15];
+	int sifresi;
+	int hesapno;
+	int bakiye=0;
+	int sayac=0;
+	char cins[15];
+	while(!feof(dosya))
+	{
+		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
+		sayac++;
+	}
+	cout<<"dosyadaki kayit sayisi : "<<sayac<<endl;
+	
+	 fclose(dosya);
+	 
+	 dosya=fopen("hesaplar.txt","r");
+      
+	struct musteri kayitlar[sayac-1];
+	int z=0;
+	while(!feof(dosya))
+	{   cout<<"merhaba"<<endl;
+		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
+		if(m->hesap_no==hesapno)
+		{
+		 	bakiye=bakiye+miktar;
+		 	strcpy(cins,tur);
+		}
+		else
+		{
+			bakiye=bakiye;
+		}
+	   strcpy(kayitlar[z].ad,isim);
+	   cout<<"ol be "<<endl;
+	   strcpy(kayitlar[z].soyad,soyad);
+	   kayitlar[z].hesap_no=hesapno;
+	   kayitlar[z].sifre=sifresi;
+	   kayitlar[z].money.miktar=bakiye;
+	   strcpy(kayitlar[z].money.cins,cins);
+	   
+		z++;
+		
+	}
+	fclose(dosya);
+
+sil();
+	
+dosya=fopen("hesaplar.txt","a+");
+	
+		for(int j=0; j<sayac-1; j++)
+	{
+	    
+		fprintf(dosya,"%s %s %d %d %d %s\n",kayitlar[j].ad,kayitlar[j].soyad,kayitlar[j].hesap_no,kayitlar[j].sifre,kayitlar[j].money.miktar,kayitlar[j].money.cins);
+	
+	
+		
+	}
+	fclose(dosya);
+
+cout<<"sssssss"<<endl;
+cikis_yap();
+	
+}
+
+void para_cekme(struct musteri *m)
+{
+	
+	 int miktar;
+	cout<<"Cekmek istediginiz miktari girin : "<<endl;
+	cin>>miktar;
+
+	
+	dosya=fopen("hesaplar.txt","r");
+	dosya2=fopen("yedek.txt","w+");
+	dosya3=fopen("sil.txt","w");
+	 fclose(dosya3);
+	char cins[15];
+	char isim[15];
+	char soyad[15];
+	int sifresi;
+	int hesapno;
+	int bakiye=0;
+	int sayac=0;
+	while(!feof(dosya))
+	{
+		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
+		sayac++;
+	}
+
+	
+	 fclose(dosya);
+	 
+	 dosya=fopen("hesaplar.txt","r");
+      
+	struct musteri kayitlar[sayac-1];
+	int z=0;
+	while(!feof(dosya))
+	{   cout<<"merhaba"<<endl;
+		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
+		if(m->hesap_no==hesapno)
+		{
+		 	bakiye=bakiye-miktar;
+		}
+		else
+		{
+			bakiye=bakiye;
+		}
+	   strcpy(kayitlar[z].ad,isim);
+	   cout<<"ol be "<<endl;
+	   strcpy(kayitlar[z].soyad,soyad);
+	   kayitlar[z].hesap_no=hesapno;
+	   kayitlar[z].sifre=sifresi;
+	   kayitlar[z].money.miktar=bakiye;
+	   strcpy(kayitlar[z].money.cins,cins);
+	   
+		z++;
+		
+	}
+	fclose(dosya);
+
+sil();
+	
+dosya=fopen("hesaplar.txt","a+");
+	
+		for(int j=0; j<sayac-1; j++)
+	{
+	    
+		fprintf(dosya,"%s %s %d %d %d %s\n",kayitlar[j].ad,kayitlar[j].soyad,kayitlar[j].hesap_no,kayitlar[j].sifre,kayitlar[j].money.miktar,kayitlar[j].money.cins);
+	
+		
+	}
+	fclose(dosya);
+
+}
+
+
+int cikis_yap()
+{   
+cout<<"cikis"<<endl;
+	return 0;
+}
+
+
+
+
+
+void sil()
+{
+		int status;
+
+	status=remove("hesaplar.txt");
+	
+	if(status==0)
+	{
+		cout<<"file deleted successfully..!!\n";
+	}
+	else
+	{
+		cout<<"Unable to delete file \n";
+		perror("Error Message ");
+	}
+}
+void sifre_degistir(struct musteri *m)
+{
+	
+	dosya=fopen("hesaplar.txt","r");
+	int sayac=0;
+	int yeni_sifre;
+	cout<<"Yeni sifrenizi olusturun :"<<endl;
+	cin>>yeni_sifre;
+	char isim[15];
+	char soyad[15];
+	int sifresi;
+	int hesapno;
+	int bakiye=0;
+	char cins[15];;
+
+	while(!feof(dosya))
+	{
+		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
+		sayac++;
+	}
+cout<<"sayac : "<<sayac<<endl;
+	
+	 fclose(dosya);
+	 
+	 dosya=fopen("hesaplar.txt","r");
+      
+	struct musteri kayitlar[sayac-1];
+	int z=0;
+	while(!feof(dosya))
+	{   cout<<"merhaba"<<endl;
+		fscanf(dosya,"%s %s %d %d %d %s",isim,soyad,&hesapno,&sifresi,&bakiye,cins);
+		if(m->hesap_no==hesapno)
+		{
+		 	sifresi=yeni_sifre;
+		}
+		else
+		{
+		  sifresi=sifresi;
+		}
+	   strcpy(kayitlar[z].ad,isim);
+	   cout<<"ol be "<<endl;
+	   strcpy(kayitlar[z].soyad,soyad);
+	   kayitlar[z].hesap_no=hesapno;
+	   kayitlar[z].sifre=sifresi;
+	   kayitlar[z].money.miktar=bakiye;
+	    strcpy(kayitlar[z].money.cins,cins);
+		z++;
+		
+	}
+	fclose(dosya);
+	
+
+sil();
+	
+dosya=fopen("hesaplar.txt","a+");
+	
+		for(int j=0; j<sayac-1; j++)
+	{
+	    
+		fprintf(dosya,"%s %s %d %d %d %s\n",kayitlar[j].ad,kayitlar[j].soyad,kayitlar[j].hesap_no,kayitlar[j].sifre,kayitlar[j].money.miktar,kayitlar[j].money.cins);
+		
+	
+	}
+	fclose(dosya);
+
+
+	
+}
+void giris_yap()
+{
+	 musteri *kullanici=new musteri();
+	 char isim[15];
+	 char soyad[15];
+	 int hesapno;
+	 int sifresi;
+	 int girilen_sifre;
+	 int bakiye;
+	 int sayi=0;
+	 
+	 cout<<"GIRIS YAPMAK ICIN SIFRENIZI GIRINIZ."<<endl;
+	 cin>>girilen_sifre;
+	 
+	 
+	 dosya=fopen("hesaplar.txt","r");
+	 
+	
+	  
+	 	
+	 while(!feof(dosya))
+	 {
+	 
+	 		
+	 	   fscanf(dosya, "%s %s %d %d %d %s",kullanici->ad,kullanici->soyad,&hesapno,&sifresi,&bakiye,kullanici->money.cins);
+	 	   //cout<<"okunan sifre"<<sifresi<<endl;
+	 	   
+	 	if(sifresi==girilen_sifre)
+	 	{
+	 		cout<<"basarili islem"<<endl;
+	 		kullanici->hesap_no=hesapno;
+	 		kullanici->sifre=sifresi;
+	 		kullanici->money.miktar=bakiye;
+	 		sayi=1;	
+	 		fclose(dosya);
+	 		anamenu(kullanici);
+	 		break;
+	 		
+	 	}
+	 	
+	 	
+		 	
+	 	}
+	 	if(sayi==0)
+	 	{     
+	 	    //dosya=fopen("hesaplar.txt","r");
+	 	    fseek(dosya,0,SEEK_SET);
+	 	    cout<<"Tekrardan sifre giriniz."<<endl;
+	 	    cin>>girilen_sifre;
+	 	    
+	 		 while(!feof(dosya))
+	 {
+	 
+	 		
+	 	   fscanf(dosya, "%s %s %d %d %d %s",kullanici->ad,kullanici->soyad,&hesapno,&sifresi,&bakiye,kullanici->money.cins);
+	 	   
+	 	if(sifresi==girilen_sifre)
+	 	{
+	 		cout<<"basarili islem"<<endl;
+	 		sayi=1;
+	 		fclose(dosya);
+	 		anamenu(kullanici);
+	 		break;
+	 		
+	 	}
+	 	}
+	 }
+	 	
+	 		if(sayi==0)
+	 	{     
+	 	    
+	 	    fseek(dosya,0,SEEK_SET);
+	 	    cout<<"Tekrardan sifre giriniz."<<endl;
+	 	    cin>>girilen_sifre;
+	 	    
+	 		 while(!feof(dosya))
+	 {
+	 
+	 		
+	 	  fscanf(dosya, "%s %s %d %d %d %s",kullanici->ad,kullanici->soyad,&hesapno,&sifresi,&bakiye,kullanici->money.cins);
+	 	   
+	 	   
+	 	if(sifresi==girilen_sifre)
+	 	{
+	 		cout<<"basarili islem"<<endl;
+	 		sayi=1;
+	 		fclose(dosya);
+	 		anamenu(kullanici);
+	 		break;
+	 		
+	 	}
+	 	}
+	 }
+	 
+	 	
+	 if(sayi==0)
+	 {
+	 	cout<<"hesabiniz bloke oldu"<<endl;	
+	 	cikis_yap();
+	 }
+	   cout<<"sonlandi"<<endl;
+	 }
+	 	
+	 	
+	
+
+
+void  anamenu(struct musteri *m)
+{   
+
+    int secim;
+	cout<<"YAPMAK ISTEDIGINIZ ISLEMI SECIN"<<endl;
+	cout<<"1-SIFRE DEGISTIRME"<<endl;
+	cout<<"2-PARA YATIRMA"<<endl;
+	cout<<"3-PARA CEKME"<<endl;
+	cout<<"4-HESAP BILGI GORUNTULEME"<<endl;
+	
+	cin>>secim;
+	
+	switch(secim)
+	{
+		
+		case 1:
+		{
+			sifre_degistir(m);
+			break;
+		}	
+		
+		case 2:
+		
+		{
+			para_ekle(m);
+			break;
+	    }
+	    case 3:
+	   {
+	    	para_cekme(m);
+	    	break;
+	  }
+	    case 4:
+	    {
+	    	hesap_bilgi_goruntule(m);
+	    	break;
+	    	
+	    }
+	    
+	    case 5:
+	    	{
+	    		cikis_yap();
+	    		break;
+	    	}
+		
+	}
+}
+
+int main()
+{
+	
+	 //dosya=fopen("hesaplar.txt","a+");
+	 dosya2=fopen("yedek.txt","a+");
+	 int secim;
+	 cout<<"Yeni uye girisi icin  1"<<endl<<"Giris yapmak icin 2 yi secin"<<endl;
+	 cin>>secim;
+	  
+	 switch(secim)
+	 {
+	 	case 1:
+	 		{
+	 		dosya=fopen("hesaplar.txt","a+");
+	 		kayit_ekle();
+	 		break;}
+	 	case 2:
+	 	{
+	 		giris_yap();
+	 		cout<<"asdcfvgbn"<<endl;
+	     	return 0;
+	 	}	
+	 		
+	 }
+	 
+
+	return 0;
+}
